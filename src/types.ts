@@ -6,8 +6,14 @@ import {
 import { TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
 import client from 'prom-client';
 
+export interface Budget {
+  budgetId: string,
+  e2ePassword: string | null,
+  name: string,
+}
+
 export interface ActualApiServiceI {
-  initializeApi(): Promise<void>;
+  initializeApi(budget: Budget): Promise<void>;
 
   shutdownApi(): Promise<void>;
 
@@ -40,17 +46,18 @@ export interface Stats {
   transactionCount: number;
   balance: number;
   transfersCount: number;
+  budget: string,
 }
 
 export interface MetricsRendererI {
-  renderFromStats(stats: Stats): client.Registry<'text/plain; version=0.0.4; charset=utf-8'>
-}
-
-export interface StatsFetcherI {
-  fetch(): Promise<Stats>
+  renderFromStats(stats: Stats[]): client.Registry<'text/plain; version=0.0.4; charset=utf-8'>
 }
 
 export interface Metrics {
   metrics: string,
   contentType: string,
+}
+
+export interface StatsFetcherI {
+  fetch(budget: Budget): Promise<Stats>
 }

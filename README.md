@@ -19,12 +19,12 @@ Simple Prometheus exporter for [Actual Budget](https://actualbudget.com/).
 It exposes the following metrics:
 
 ```prometheus
-actual_budget_account_balance{account="Account Name",is_off_budget="false"} 10000 # for each account
-actual_budget_category_tranasction_count{category="Category Name"} 1000 # for each category
-actual_budget_uncategorized_transaction_count 0
-actual_budget_balance 1000000 # total balance
-actual_budget_transaction_count 1000
-actual_budget_transfers_count 100
+actual_budget_account_balance{account="Account Name",is_off_budget="false",budget="main"} 10000 # for each account
+actual_budget_category_tranasction_count{category="Category Name",budget="main"} 1000 # for each category
+actual_budget_uncategorized_transaction_count{budget="main"} 0
+actual_budget_balance 1000000{budget="main"} # total balance
+actual_budget_transaction_count{budget="main"} 1000
+actual_budget_transfers_count{budget="main"} 100
 ```
 
 ### Grafana Dashboard
@@ -62,6 +62,11 @@ services:
     environment:
       ACTUAL_SERVER_URL: http://actual_server:5006
       ACTUAL_PASSWORD: your_actual_password
-      ACTUAL_BUDGET_ID: your_actual_budget_id # This is the ID from Settings → Show advanced settings → Sync ID
-#      ACTUAL_E2E_PASSWORD:  # optional. required if you have E2E encryption
+      ACTUAL_BUDGET_ID_1: your_actual_budget_id # This is the ID from Settings → Show advanced settings → Sync ID
+      #ACTUAL_E2E_PASSWORD_1: # optional. required if you have E2E encryption
+      #ACTUAL_E2E_BUDGET_NAME_1: # optional. this is custom name, helpful if you have multiple budgets. Will be added to prometheus label
+      # If you want to track multiple budgets, you can add more environment variables
+      #ACTUAL_BUDGET_ID_2:
+      #ACTUAL_E2E_PASSWORD_2:
+      #ACTUAL_E2E_BUDGET_NAME_2:
 ```

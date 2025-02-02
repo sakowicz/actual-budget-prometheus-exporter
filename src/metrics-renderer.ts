@@ -22,33 +22,37 @@ export default class MetricsRenderer implements MetricsRendererI {
     this.balance = new client.Gauge({
       name: 'actual_budget_balance',
       help: 'Balance of all account',
+      labelNames: ['budget'],
     });
 
     this.transactionCount = new client.Gauge({
       name: 'actual_budget_transaction_count',
       help: 'Total number of transactions',
+      labelNames: ['budget'],
     });
 
     this.accountGauge = new client.Gauge({
       name: 'actual_budget_account_balance',
       help: 'Account Balance',
-      labelNames: ['account', 'is_off_budget'],
+      labelNames: ['account', 'is_off_budget', 'budget'],
     });
 
     this.categoryGauge = new client.Gauge({
       name: 'actual_budget_category_tranasction_count',
       help: 'Category Transaction Count',
-      labelNames: ['category'],
+      labelNames: ['category', 'budget'],
     });
 
     this.uncategorizedTransactionCountGauge = new client.Gauge({
       name: 'actual_budget_uncategorized_transaction_count',
       help: 'Uncategorized Transaction Count',
+      labelNames: ['budget'],
     });
 
     this.transfersCount = new client.Gauge({
       name: 'actual_budget_transfers_count',
       help: 'Transfers Count',
+      labelNames: ['budget'],
     });
 
     this.register.registerMetric(this.accountGauge);
@@ -59,21 +63,34 @@ export default class MetricsRenderer implements MetricsRendererI {
     this.register.registerMetric(this.transfersCount);
   }
 
-  renderFromStats(stats: Stats): client.Registry {
+  renderFromStats(stats: Stats[]): client.Registry {
+    stats.forEach((stat) => {
+      this.forSingleBudget(stat);
+    });
+
+    return this.register;
+  }
+
+  private forSingleBudget(stats: Stats): void {
     stats.accounts.forEach((account) => {
       this.accountGauge.set({
         account: account.name,
         is_off_budget: account.isOffBudget ? 'true' : 'false',
+        budget: stats.budget,
       }, account.balance);
     });
     stats.categories.forEach((category) => {
-      this.categoryGauge.set({ category: category.name }, category.transactionCount);
+      this.categoryGauge.set({
+        category: category.name,
+        budget: stats.budget,
+      }, category.transactionCount);
     });
-    this.uncategorizedTransactionCountGauge.set(stats.uncategorizedTransactionCount);
-    this.balance.set(stats.balance);
-    this.transactionCount.set(stats.transactionCount);
-    this.transfersCount.set(stats.transfersCount);
-
-    return this.register;
+    this.uncategorizedTransactionCountGauge.set(
+      { budget: stats.budget },
+      stats.uncategorizedTransactionCount,
+    );
+    this.balance.set({ budget: stats.budget }, stats.balance);
+    this.transactionCount.set({ budget: stats.budget }, stats.transactionCount);
+    this.transfersCount.set({ budget: stats.budget }, stats.transfersCount);
   }
 }

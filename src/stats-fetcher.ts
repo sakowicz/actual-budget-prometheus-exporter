@@ -1,5 +1,5 @@
 import {
-  Account, ActualApiServiceI, Category, Stats, StatsFetcherI,
+  Account, ActualApiServiceI, Budget, Category, Stats, StatsFetcherI,
 } from './types';
 
 export default class StatsFetcher implements StatsFetcherI {
@@ -9,8 +9,8 @@ export default class StatsFetcher implements StatsFetcherI {
     this.actualApiService = actualApiService;
   }
 
-  async fetch(): Promise<Stats> {
-    await this.actualApiService.initializeApi();
+  async fetch(budget: Budget): Promise<Stats> {
+    await this.actualApiService.initializeApi(budget);
     const actualAccounts = await this.actualApiService.getAccounts();
     const actualCategories = await this.actualApiService.getCategories();
     const accounts: Account[] = [];
@@ -62,6 +62,7 @@ export default class StatsFetcher implements StatsFetcherI {
       transactionCount,
       balance,
       transfersCount,
+      budget: budget.name,
     };
   }
 }

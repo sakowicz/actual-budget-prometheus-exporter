@@ -4,7 +4,7 @@ import {
   APICategoryGroupEntity,
 } from '@actual-app/api/@types/loot-core/server/api-models';
 import { TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
-import { ActualApiServiceI } from './types';
+import { ActualApiServiceI, Budget } from './types';
 
 class ActualApiService implements ActualApiServiceI {
   private actualApiClient: typeof import('@actual-app/api');
@@ -17,29 +17,21 @@ class ActualApiService implements ActualApiServiceI {
 
   private readonly password: string;
 
-  private readonly budgetId: string;
-
-  private readonly e2ePassword: string;
-
   constructor(
     actualApiClient: typeof import('@actual-app/api'),
     fs: typeof import('fs'),
     dataDir: string,
     serverURL: string,
     password: string,
-    budgetId: string,
-    e2ePassword: string,
   ) {
     this.actualApiClient = actualApiClient;
     this.fs = fs;
     this.dataDir = dataDir;
     this.serverURL = serverURL;
     this.password = password;
-    this.budgetId = budgetId;
-    this.e2ePassword = e2ePassword;
   }
 
-  public async initializeApi() {
+  public async initializeApi(budget: Budget): Promise<void> {
     if (!this.fs.existsSync(this.dataDir)) {
       this.fs.mkdirSync(this.dataDir);
     }
@@ -51,12 +43,12 @@ class ActualApiService implements ActualApiServiceI {
     });
 
     try {
-      if (this.e2ePassword) {
-        await this.actualApiClient.downloadBudget(this.budgetId, {
-          password: this.e2ePassword,
+      if (budget.e2ePassword) {
+        await this.actualApiClient.downloadBudget(budget.budgetId, {
+          password: budget.e2ePassword,
         });
       } else {
-        await this.actualApiClient.downloadBudget(this.budgetId);
+        await this.actualApiClient.downloadBudget(budget.budgetId);
       }
       console.log('Budget downloaded');
     } catch (error: unknown) {

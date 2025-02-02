@@ -30,6 +30,7 @@ describe('ActualBudgetPrometheusExporter', () => {
     sut = new ActualBudgetPrometheusExporter(
       statsFetcher,
       metricsRenderer,
+      [{ budgetId: '1', e2ePassword: 'password', name: 'budget' }],
     );
     const metrics = await sut.getMetrics();
 

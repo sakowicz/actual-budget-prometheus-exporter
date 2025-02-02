@@ -2,7 +2,7 @@ import * as actualApiClient from '@actual-app/api';
 import fs from 'fs';
 import ActualApiService from './actual-api-service';
 import {
-  budgetId, dataDir, e2ePassword, password, serverURL,
+  budgets, dataDir, password, serverURL,
 } from './config';
 import StatsFetcher from './stats-fetcher';
 import MetricsRenderer from './metrics-renderer';
@@ -14,13 +14,15 @@ const actualApiService = new ActualApiService(
   dataDir,
   serverURL,
   password,
-  budgetId,
-  e2ePassword,
 );
 
 const statsFetcher = new StatsFetcher(actualApiService);
 const metricsRenderer = new MetricsRenderer();
 
-const actualPrometheusExporter = new ActualBudgetPrometheusExporter(statsFetcher, metricsRenderer);
+const actualPrometheusExporter = new ActualBudgetPrometheusExporter(
+  statsFetcher,
+  metricsRenderer,
+  budgets,
+);
 
 export default actualPrometheusExporter;
