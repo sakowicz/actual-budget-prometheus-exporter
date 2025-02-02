@@ -113,7 +113,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "actual_budget_balance{} / 100",
+          "expr": "actual_budget_balance{budget=\"$budget\"} / 100",
           "instant": false,
           "range": true,
           "refId": "A"
@@ -174,7 +174,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "actual_budget_transaction_count",
+          "expr": "actual_budget_transaction_count{budget=\"$budget\"}",
           "instant": false,
           "range": true,
           "refId": "A"
@@ -239,7 +239,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "actual_budget_uncategorized_transaction_count",
+          "expr": "actual_budget_uncategorized_transaction_count{budget=\"$budget\"}",
           "instant": false,
           "range": true,
           "refId": "A"
@@ -309,7 +309,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum (actual_budget_category_tranasction_count{})  by (category)",
+          "expr": "sum (actual_budget_category_tranasction_count{budget=\"$budget\"})  by (category)",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
@@ -382,7 +382,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum (actual_budget_account_balance{} / 100)  by (account)",
+          "expr": "sum (actual_budget_account_balance{budget=\"$budget\"} / 100)  by (account)",
           "instant": true,
           "legendFormat": "{{label_name}}",
           "range": false,
@@ -398,7 +398,31 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(budget)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Budget",
+        "multi": false,
+        "name": "budget",
+        "options": [],
+        "query": {
+          "query": "label_values(budget)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-6h",
@@ -408,6 +432,6 @@
   "timezone": "",
   "title": "Actual Budget",
   "uid": "b07fbf56-357a-427a-9f4c-28df60c6b5ea",
-  "version": 7,
+  "version": 9,
   "weekStart": ""
 }
