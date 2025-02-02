@@ -1,0 +1,105 @@
+import {
+  APIAccountEntity,
+  APICategoryEntity,
+  APICategoryGroupEntity,
+  APIPayeeEntity,
+} from '@actual-app/api/@types/loot-core/server/api-models';
+import { TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
+
+export default class GivenActualData {
+  public static CATEGORY_GROCERIES = 'ff7be77b-40f4-4e9d-aea4-be6b8c431281';
+
+  public static CATEGORY_TRAVEL = '541836f1-e756-4473-a5d0-6c1d3f06c7fa';
+
+  public static CATEGORY_SALARY = '123836f1-e756-4473-a5d0-6c1d3f06c7fa';
+
+  public static ACCOUNT_OFF_BUDGET = '321836f1-e756-4473-a5d0-6c1d3f06c7fa';
+
+  public static ACCOUNT_MAIN = '333836f1-e756-4473-a5d0-6c1d3f06c7fa';
+
+  public static createCategoryGroup(
+    id: string,
+    name: string,
+    categories: APICategoryEntity[],
+  ): APICategoryGroupEntity {
+    return { id, name, categories };
+  }
+
+  public static createCategory(id: string, name: string, groupId: string): APICategoryEntity {
+    return { id, name, group_id: groupId };
+  }
+
+  public static createPayee(id: string, name: string): APIPayeeEntity {
+    return { id, name };
+  }
+
+  public static createAccount(
+    id: string,
+    name: string,
+    isOffBudget: boolean,
+    isClosed: boolean,
+  ): APIAccountEntity {
+    return {
+      id, name, offbudget: isOffBudget, closed: isClosed,
+    };
+  }
+
+  public static createTransaction(
+    id: string,
+    amount: number,
+    importedPayee: string,
+    notes = '',
+    account = GivenActualData.ACCOUNT_MAIN,
+    isParent = false,
+    category: undefined | string = undefined,
+  ): TransactionEntity {
+    return {
+      id,
+      amount,
+      starting_balance_flag: false,
+      imported_payee: importedPayee,
+      account,
+      date: '2021-01-01',
+      notes,
+      is_parent: isParent,
+      category,
+    };
+  }
+
+  public static createSampleCategoryGroups(): APICategoryGroupEntity[] {
+    return [
+      this.createCategoryGroup('1', 'Usual Expenses', [
+        this.createCategory(GivenActualData.CATEGORY_GROCERIES, 'Groceries', '1'),
+        this.createCategory(GivenActualData.CATEGORY_TRAVEL, 'Travel', '1'),
+      ]),
+      this.createCategoryGroup('2', 'Income', [
+        this.createCategory(GivenActualData.CATEGORY_SALARY, 'Salary', '2'),
+      ]),
+    ];
+  }
+
+  public static createSampleCategories(): APICategoryEntity[] {
+    return [
+      this.createCategory(GivenActualData.CATEGORY_GROCERIES, 'Groceries', '1'),
+      this.createCategory(GivenActualData.CATEGORY_TRAVEL, 'Travel', '1'),
+      this.createCategory(GivenActualData.CATEGORY_SALARY, 'Salary', '2'),
+    ];
+  }
+
+  public static createSampleAccounts(): APIAccountEntity[] {
+    return [
+      this.createAccount(GivenActualData.ACCOUNT_MAIN, 'Main Account', false, false),
+      this.createAccount(GivenActualData.ACCOUNT_OFF_BUDGET, 'Off Budget Account', true, false),
+    ];
+  }
+
+  public static createSampleTransactions(): TransactionEntity[] {
+    return [
+      this.createTransaction('1', 100, 'Carrefour 32321', 'Transaction without category'),
+      this.createTransaction('2', 100, 'Carrefour 32321', 'Transaction with Groceries category', GivenActualData.CATEGORY_GROCERIES),
+      this.createTransaction('3', 100, 'Airbnb * XXXX1234567', 'Transaction with Travel category', undefined),
+      this.createTransaction('4', -30000, ' 3', 'Transaction with salary income', GivenActualData.CATEGORY_SALARY),
+      this.createTransaction('5', -30000, '1', 'Transaction with income without category', undefined),
+    ];
+  }
+}
