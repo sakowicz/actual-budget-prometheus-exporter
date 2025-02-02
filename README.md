@@ -1,4 +1,4 @@
-# 🤖 Actual Budget Prometheus Exporter
+# Actual Budget Prometheus Exporter
 
 <p>
     <a href="https://github.com/sakowicz/actual-budget-prometheus-exporter">
@@ -26,6 +26,21 @@ actual_budget_balance 1000000 # total balance
 actual_budget_transaction_count 1000
 actual_budget_transfers_count 100
 ```
+
+### Grafana Dashboard
+
+You can use the following Grafana dashboard to visualize the metrics exposed by the Actual Budget Prometheus Exporter:
+
+![Grafana Dashboard Screenshot](grafana/preview.png)
+[Actual Budget Grafana Dashboard](https://grafana.com/grafana/dashboards/22789-actual-budget/)
+
+To import the dashboard, follow these steps:
+
+1. Open your Grafana instance.
+2. Go to the "Dashboards" section.
+3. Click on "Import".
+4. Enter the dashboard ID: `22789`.
+5. Click "Load" and follow the instructions to complete the import.
 
 ### Configuration
 
