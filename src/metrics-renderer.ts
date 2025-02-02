@@ -4,17 +4,17 @@ import { MetricsRendererI, Stats } from './types';
 export default class MetricsRenderer implements MetricsRendererI {
   private register: client.Registry;
 
-  private accountGauge: client.Gauge<string>;
+  private accountGauge: client.Gauge;
 
-  private categoryGauge: client.Gauge<string>;
+  private categoryGauge: client.Gauge;
 
-  private uncategorizedTransactionCountGauge: client.Gauge<string>;
+  private uncategorizedTransactionCountGauge: client.Gauge;
 
-  private balance: client.Gauge<string>;
+  private balance: client.Gauge;
 
-  private transactionCount: client.Gauge<string>;
+  private transactionCount: client.Gauge;
 
-  private transfersCount: client.Gauge<string>;
+  private transfersCount: client.Gauge;
 
   constructor() {
     this.register = new client.Registry();
@@ -59,7 +59,7 @@ export default class MetricsRenderer implements MetricsRendererI {
     this.register.registerMetric(this.transfersCount);
   }
 
-  renderFromStats(stats: Stats): client.Registry<'text/plain; version=0.0.4; charset=utf-8'> {
+  renderFromStats(stats: Stats): client.Registry {
     stats.accounts.forEach((account) => {
       this.accountGauge.set({
         account: account.name,

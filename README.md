@@ -12,6 +12,23 @@
     </a>
 </p>
 
+### Description
+
+Simple Prometheus exporter for [Actual Budget](https://actualbudget.com/).
+
+It exposes the following metrics:
+
+```prometheus
+actual_budget_account_balance{account="Account Name",is_off_budget="false"} 10000 # for each account
+actual_budget_category_tranasction_count{category="Category Name"} 1000 # for each category
+actual_budget_uncategorized_transaction_count 0
+actual_budget_balance 1000000 # total balance
+actual_budget_transaction_count 1000
+actual_budget_transfers_count 100
+```
+
+### Configuration
+
 ```yaml
 services:
   actual_server:

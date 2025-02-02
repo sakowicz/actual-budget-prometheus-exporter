@@ -20,8 +20,6 @@ export default class StatsFetcher implements StatsFetcherI {
     );
     let balance = 0;
 
-    // todo
-    // eslint-disable-next-line no-restricted-syntax
     for (const account of actualAccounts) {
       const accountBalance = await this.actualApiService.getAccountBalance(account.id);
       balance += accountBalance;
