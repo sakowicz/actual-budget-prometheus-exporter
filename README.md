@@ -64,9 +64,9 @@ services:
       ACTUAL_PASSWORD: your_actual_password
       ACTUAL_BUDGET_ID_1: your_actual_budget_id # This is the ID from Settings → Show advanced settings → Sync ID
       #ACTUAL_E2E_PASSWORD_1: # optional. required if you have E2E encryption
-      #ACTUAL_E2E_BUDGET_NAME_1: # optional. this is custom name, helpful if you have multiple budgets. Will be added to prometheus label
+      #ACTUAL_BUDGET_NAME_1: # optional. this is custom name, helpful if you have multiple budgets. Will be added to prometheus label
       # If you want to track multiple budgets, you can add more environment variables
       #ACTUAL_BUDGET_ID_2:
       #ACTUAL_E2E_PASSWORD_2:
-      #ACTUAL_E2E_BUDGET_NAME_2:
+      #ACTUAL_BUDGET_NAME_2:
 ```
