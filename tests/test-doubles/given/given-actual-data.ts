@@ -1,9 +1,4 @@
-import {
-  APIAccountEntity,
-  APICategoryEntity,
-  APICategoryGroupEntity,
-  APIPayeeEntity,
-} from '@actual-app/api/@types/loot-core/server/api-models';
+import { APIAccountEntity, APICategoryEntity } from '@actual-app/api/@types/loot-core/server/api-models';
 import { TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
 
 export default class GivenActualData {
@@ -17,20 +12,8 @@ export default class GivenActualData {
 
   public static ACCOUNT_MAIN = '333836f1-e756-4473-a5d0-6c1d3f06c7fa';
 
-  public static createCategoryGroup(
-    id: string,
-    name: string,
-    categories: APICategoryEntity[],
-  ): APICategoryGroupEntity {
-    return { id, name, categories };
-  }
-
   public static createCategory(id: string, name: string, groupId: string): APICategoryEntity {
     return { id, name, group_id: groupId };
-  }
-
-  public static createPayee(id: string, name: string): APIPayeeEntity {
-    return { id, name };
   }
 
   public static createAccount(
@@ -45,37 +28,43 @@ export default class GivenActualData {
   }
 
   public static createTransaction(
-    id: string,
-    amount: number,
-    importedPayee: string,
-    notes = '',
-    account = GivenActualData.ACCOUNT_MAIN,
-    isParent = false,
-    category: undefined | string = undefined,
+    {
+      id = null,
+      amount = 123,
+      importedPayee = 'Sample Payee',
+      notes = '',
+      account = GivenActualData.ACCOUNT_MAIN,
+      isParent = false,
+      category = undefined,
+      isTransfer = false,
+      isStartingBalance = false,
+      subtransactions = [],
+    }: {
+      id?: string | null,
+      amount?: number,
+      importedPayee?: string,
+      notes?: string,
+      account?: string,
+      isParent?: boolean,
+      category?: string | undefined,
+      isTransfer?: boolean,
+      isStartingBalance?: boolean,
+      subtransactions?: TransactionEntity[],
+    },
   ): TransactionEntity {
     return {
-      id,
+      id: id ?? Math.random().toString(),
       amount,
-      starting_balance_flag: false,
       imported_payee: importedPayee,
       account,
       date: '2021-01-01',
       notes,
       is_parent: isParent,
       category,
+      transfer_id: isTransfer ? Math.random().toString() : undefined,
+      starting_balance_flag: isStartingBalance,
+      subtransactions: subtransactions.length > 0 ? subtransactions : undefined,
     };
-  }
-
-  public static createSampleCategoryGroups(): APICategoryGroupEntity[] {
-    return [
-      this.createCategoryGroup('1', 'Usual Expenses', [
-        this.createCategory(GivenActualData.CATEGORY_GROCERIES, 'Groceries', '1'),
-        this.createCategory(GivenActualData.CATEGORY_TRAVEL, 'Travel', '1'),
-      ]),
-      this.createCategoryGroup('2', 'Income', [
-        this.createCategory(GivenActualData.CATEGORY_SALARY, 'Salary', '2'),
-      ]),
-    ];
   }
 
   public static createSampleCategories(): APICategoryEntity[] {
@@ -95,11 +84,12 @@ export default class GivenActualData {
 
   public static createSampleTransactions(): TransactionEntity[] {
     return [
-      this.createTransaction('1', 100, 'Carrefour 32321', 'Transaction without category'),
-      this.createTransaction('2', 100, 'Carrefour 32321', 'Transaction with Groceries category', GivenActualData.CATEGORY_GROCERIES),
-      this.createTransaction('3', 100, 'Airbnb * XXXX1234567', 'Transaction with Travel category', undefined),
-      this.createTransaction('4', -30000, ' 3', 'Transaction with salary income', GivenActualData.CATEGORY_SALARY),
-      this.createTransaction('5', -30000, '1', 'Transaction with income without category', undefined),
+      this.createTransaction({
+        id: '1',
+        amount: 100,
+        importedPayee: 'Carrefour 32321',
+        notes: 'Transaction without category',
+      }),
     ];
   }
 }

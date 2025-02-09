@@ -32,13 +32,15 @@ export default class StatsFetcher implements StatsFetcherI {
     let transfersCount = 0;
 
     const transactions = await this.actualApiService.getTransactions();
-    const transactionCount = transactions.length;
-    transactions.forEach((transaction) => {
+    let transactionCount = transactions.length;
+    for (const transaction of transactions) {
       if (transaction.subtransactions && transaction.subtransactions.length > 0) {
-        transaction.subtransactions.forEach((subtransaction) => {
+        transaction.subtransactions.forEach((subtransaction): void => {
           transactions.push(subtransaction);
+          transactionCount += 1;
         });
-        return;
+        transactionCount -= 1;
+        continue;
       }
       const category = categories.find((c) => c.id === transaction.category);
       if (category) {
@@ -52,7 +54,7 @@ export default class StatsFetcher implements StatsFetcherI {
       } else {
         uncategorizedTransactionCount += 1;
       }
-    });
+    }
 
     await this.actualApiService.shutdownApi();
     return {
