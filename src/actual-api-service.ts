@@ -66,10 +66,12 @@ class ActualApiService implements ActualApiServiceI {
   }
 
   public async getCategories(): Promise<(APICategoryEntity | APICategoryGroupEntity)[]> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.actualApiClient.getCategories();
   }
 
   public async getAccounts(): Promise<APIAccountEntity[]> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.actualApiClient.getAccounts();
   }
 
@@ -78,6 +80,7 @@ class ActualApiService implements ActualApiServiceI {
   }
 
   public async getTransactions(): Promise<TransactionEntity[]> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.actualApiClient.getTransactions(undefined, undefined, undefined);
   }
 }
