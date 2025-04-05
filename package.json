@@ -1,6 +1,6 @@
 {
   "name": "@sakowicz/actual-budget-prometheus-exporter",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Prometheus metrics exporter for Actual Budget app",
   "main": "app.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "author": "Szymon Sakowicz <info@sakowi.cz>",
   "license": "MIT",
   "dependencies": {
-    "@actual-app/api": "^25.3.1",
+    "@actual-app/api": "^25.4.0",
     "@types/jest": "^29.5.14",
     "dotenv": "^16.4.7",
     "prom-client": "^15.1.3",
