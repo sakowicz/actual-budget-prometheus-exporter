@@ -24,17 +24,19 @@ describe('StatsFetcher', () => {
   it('It returns all categories', async () => {
     // Arrange
     const budget = { budgetId: 'budget id', e2ePassword: null, name: 'name' };
-    const categoryGroceries = GivenActualData.createCategory('id1', 'Groceries', 'group1');
-    const categoryTravel = GivenActualData.createCategory('id2', 'Travel', 'group1');
+    const group = GivenActualData.createSampleGroup();
+    const categoryGroceries = GivenActualData.createCategory('id1', 'Groceries', group[0].id);
+    const categoryTravel = GivenActualData.createCategory('id2', 'Travel', group[0].id);
     inMemoryApiService.setCategories([categoryGroceries, categoryTravel]);
+    inMemoryApiService.setCategoryGroups(group);
 
     // Act
     const stats = await new StatsFetcher(inMemoryApiService).fetch(budget);
 
     // Assert
     expect(stats.categories).toEqual([
-      { id: 'id1', name: 'Groceries', transactionCount: 0 },
-      { id: 'id2', name: 'Travel', transactionCount: 0 },
+      { id: 'id1', name: 'Groceries', transactionCount: 0, amount: 0, groupName: group[0].name, is_income: false },
+      { id: 'id2', name: 'Travel', transactionCount: 0, amount: 0, groupName: group[0].name, is_income: false },
     ]);
   });
 
@@ -55,6 +57,24 @@ describe('StatsFetcher', () => {
       },
       {
         id: 'id2', name: 'Off Budget', balance: 0, isOffBudget: true,
+      },
+    ]);
+  });
+
+  it('It returns payees and their names', async () => {
+    const budget = { budgetId: 'budget id', e2ePassword: null, name: 'name' };
+    const payees = GivenActualData.createSamplePayees();
+    inMemoryApiService.setPayees(payees);
+
+    // Act
+    const stats = await new StatsFetcher(inMemoryApiService).fetch(budget);
+    // Assert
+    expect(stats.payees).toEqual([
+      {
+        id: payees[0].id, name: payees[0].name
+      },
+      {
+        id: payees[1].id, name: payees[1].name
       },
     ]);
   });
@@ -147,7 +167,7 @@ describe('StatsFetcher', () => {
     // Assert
     expect(salaryCategory?.transactionCount).toEqual(2);
   });
-  it('It returns proper account balance', async () => {
+  it('It returns proper account balance and transaction count', async () => {
     // Arrange
     inMemoryApiService.setAccounts(GivenActualData.createSampleAccounts());
     inMemoryApiService.setCategories(GivenActualData.createSampleCategories());
@@ -184,6 +204,8 @@ describe('StatsFetcher', () => {
     // Assert
     expect(salaryCategory?.transactionCount).toEqual(2);
     expect(travelCategory?.transactionCount).toEqual(1);
+    expect(salaryCategory?.amount).toEqual(600);
+    expect(travelCategory?.amount).toEqual(-200);
   });
   it('It returns proper transferCount', async () => {
     // Arrange
