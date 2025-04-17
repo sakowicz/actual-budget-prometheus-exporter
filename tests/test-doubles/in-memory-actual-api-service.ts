@@ -2,16 +2,23 @@ import {
   APIAccountEntity,
   APICategoryEntity,
   APICategoryGroupEntity,
+  APIPayeeEntity,
 } from '@actual-app/api/@types/loot-core/server/api-models';
-import { TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
+import { CategoryGroupEntity, PayeeEntity, TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
 import { ActualApiServiceI } from '../../src/types';
 
 export default class InMemoryActualApiService implements ActualApiServiceI {
+
+
   private categories: (APICategoryEntity | APICategoryGroupEntity)[] = [];
 
   private accounts: APIAccountEntity[] = [];
 
   private transactions: TransactionEntity[] = [];
+
+  private payees: PayeeEntity[] = [];
+
+  private categoryGroups: CategoryGroupEntity[] = [];
 
   async initializeApi(): Promise<void> {
     // Initialize the API (mock implementation)
@@ -54,5 +61,21 @@ export default class InMemoryActualApiService implements ActualApiServiceI {
     });
 
     return Promise.resolve(balance);
+  }
+
+  getPayees(): Promise<PayeeEntity[]> {
+    return Promise.resolve(this.payees);
+  }
+
+  setPayees(payees: APIPayeeEntity[]): void {
+    this.payees = payees;
+  }
+
+  getCategoryGroups(): Promise<CategoryGroupEntity[]> {
+    return Promise.resolve(this.categoryGroups);
+  }
+
+  setCategoryGroups(groups: APICategoryGroupEntity[]): void {
+    this.categoryGroups = groups;
   }
 }

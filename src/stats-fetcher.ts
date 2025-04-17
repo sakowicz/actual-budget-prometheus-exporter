@@ -1,5 +1,6 @@
+import { APICategoryEntity } from '@actual-app/api/@types/loot-core/server/api-models';
 import {
-  Account, ActualApiServiceI, Budget, Category, Stats, StatsFetcherI,
+  Account, ActualApiServiceI, Budget, Category, MapString, Stats, StatsFetcherI,
 } from './types';
 
 export default class StatsFetcher implements StatsFetcherI {
@@ -14,12 +15,39 @@ export default class StatsFetcher implements StatsFetcherI {
     const actualAccounts = await this.actualApiService.getAccounts();
     const actualCategories = await this.actualApiService.getCategories();
     const accounts: Account[] = [];
+    const categoryNames: MapString = {};
+    const categoryGroupNames: MapString = {};
+    const payeesNames: MapString = {};
+
+    // Remapping of category group ID into names
+    const categoryGroups = await this.actualApiService.getCategoryGroups();
+    for (const categoryGroup of categoryGroups) {
+      categoryGroupNames[categoryGroup.id] = categoryGroup.name;
+    }
+    categoryGroupNames[''] = 'undefined';
+
     const categories: Category[] = actualCategories.map(
       (category) => (
-        { id: category.id, name: category.name, transactionCount: 0 }),
+        {
+          id: category.id,
+          name: category.name,
+          transactionCount: 0,
+          amount: 0,
+          is_income: (category.is_income ?? false),
+          groupName: categoryGroupNames[(category as APICategoryEntity).group_id ?? ''],
+        }),
     );
-    let balance = 0;
+    // Mapping of group names from ID
+    for (const category of categories) {
+      categoryNames[category.id] = category.name;
+    }
 
+    const payees = await this.actualApiService.getPayees();
+    for (const payee of payees) {
+      payeesNames[payee.id] = payee.name;
+    }
+
+    let balance = 0;
     for (const account of actualAccounts) {
       const accountBalance = await this.actualApiService.getAccountBalance(account.id);
       balance += accountBalance;
@@ -30,7 +58,6 @@ export default class StatsFetcher implements StatsFetcherI {
 
     let uncategorizedTransactionCount = 0;
     let transfersCount = 0;
-
     const transactions = await this.actualApiService.getTransactions();
     let transactionCount = transactions.length;
     for (const transaction of transactions) {
@@ -45,6 +72,7 @@ export default class StatsFetcher implements StatsFetcherI {
       const category = categories.find((c) => c.id === transaction.category);
       if (category) {
         category.transactionCount += 1;
+        category.amount += transaction.amount;
       } else if (transaction.transfer_id) {
         transfersCount += 1;
       } else if (
@@ -60,11 +88,16 @@ export default class StatsFetcher implements StatsFetcherI {
     return {
       accounts,
       categories,
+      categoryGroupNames,
       uncategorizedTransactionCount,
       transactionCount,
       balance,
       transfersCount,
       budget: budget.name,
+      transactions,
+      payees,
+      payeesNames,
+      categoryNames,
     };
   }
 }

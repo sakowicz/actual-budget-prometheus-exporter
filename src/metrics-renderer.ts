@@ -8,6 +8,10 @@ export default class MetricsRenderer implements MetricsRendererI {
 
   private categoryGauge: client.Gauge;
 
+  private categoryGaugeTypo: client.Gauge;
+
+  private categoryAmountGauge: client.Gauge;
+
   private uncategorizedTransactionCountGauge: client.Gauge;
 
   private balance: client.Gauge;
@@ -15,6 +19,8 @@ export default class MetricsRenderer implements MetricsRendererI {
   private transactionCount: client.Gauge;
 
   private transfersCount: client.Gauge;
+
+  private transactionsGauge: client.Gauge;
 
   constructor() {
     this.register = new client.Registry();
@@ -38,9 +44,27 @@ export default class MetricsRenderer implements MetricsRendererI {
     });
 
     this.categoryGauge = new client.Gauge({
+      name: 'actual_budget_category_transaction_count',
+      help: 'Category Transaction Count',
+      labelNames: ['category', 'budget'],
+    });
+
+    this.categoryGaugeTypo = new client.Gauge({
       name: 'actual_budget_category_tranasction_count',
       help: 'Category Transaction Count',
       labelNames: ['category', 'budget'],
+    });
+
+    this.categoryAmountGauge = new client.Gauge({
+      name: 'actual_budget_category_transaction_amount',
+      help: 'Category Transaction Amount',
+      labelNames: ['category', 'is_income', 'group'],
+    });
+
+    this.transactionsGauge = new client.Gauge({
+      name: 'actual_budget_transaction',
+      help: 'Transactions',
+      labelNames: ['id', 'date', 'category', 'payee', 'account'],
     });
 
     this.uncategorizedTransactionCountGauge = new client.Gauge({
@@ -57,10 +81,13 @@ export default class MetricsRenderer implements MetricsRendererI {
 
     this.register.registerMetric(this.accountGauge);
     this.register.registerMetric(this.categoryGauge);
+    this.register.registerMetric(this.categoryGaugeTypo);
+    this.register.registerMetric(this.categoryAmountGauge);
     this.register.registerMetric(this.uncategorizedTransactionCountGauge);
     this.register.registerMetric(this.balance);
     this.register.registerMetric(this.transactionCount);
     this.register.registerMetric(this.transfersCount);
+    this.register.registerMetric(this.transactionsGauge);
   }
 
   renderFromStats(stats: Stats[]): client.Registry {
@@ -80,11 +107,36 @@ export default class MetricsRenderer implements MetricsRendererI {
       }, account.balance);
     });
     stats.categories.forEach((category) => {
+      let amount = category.amount / 100;
+      if (!category.is_income) {
+        amount *= -1;
+      }
       this.categoryGauge.set({
         category: category.name,
         budget: stats.budget,
       }, category.transactionCount);
+
+      this.categoryGaugeTypo.set({
+        category: category.name,
+        budget: stats.budget,
+      }, category.transactionCount);
+
+      this.categoryAmountGauge.set({
+        category: category.name,
+        group: category.groupName,
+        is_income: category.is_income ? 'true' : 'false',
+      }, amount);
     });
+
+    stats.transactions.forEach((transaction) => {
+      this.transactionsGauge.set({
+        id: transaction.id,
+        date: transaction.date,
+        category: stats.categoryNames[`${transaction.category}`],
+        payee: stats.payeesNames[`${transaction.payee}`],
+      }, transaction.amount);
+    });
+
     this.uncategorizedTransactionCountGauge.set(
       { budget: stats.budget },
       stats.uncategorizedTransactionCount,
