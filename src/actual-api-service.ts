@@ -3,7 +3,7 @@ import {
   APICategoryEntity,
   APICategoryGroupEntity,
 } from '@actual-app/api/@types/loot-core/server/api-models';
-import { TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
+import { CategoryGroupEntity, PayeeEntity, TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
 import { ActualApiServiceI, Budget } from './types';
 
 class ActualApiService implements ActualApiServiceI {
@@ -82,6 +82,16 @@ class ActualApiService implements ActualApiServiceI {
   public async getTransactions(): Promise<TransactionEntity[]> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.actualApiClient.getTransactions(undefined, undefined, undefined);
+  }
+
+  public async getPayees(): Promise<PayeeEntity[]> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.actualApiClient.getPayees();
+  }
+
+  public async getCategoryGroups(): Promise<CategoryGroupEntity[]> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.actualApiClient.getCategoryGroups();
   }
 }
 
