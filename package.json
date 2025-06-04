@@ -1,6 +1,6 @@
 {
   "name": "@sakowicz/actual-budget-prometheus-exporter",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Prometheus metrics exporter for Actual Budget app",
   "main": "app.js",
   "scripts": {
