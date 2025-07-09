@@ -2,8 +2,8 @@ import {
   APIAccountEntity,
   APICategoryEntity,
   APICategoryGroupEntity,
-} from '@actual-app/api/@types/loot-core/server/api-models';
-import { TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
+} from '@actual-app/api/@types/loot-core/src/server/api-models';
+import { TransactionEntity } from '@actual-app/api/@types/loot-core/src/types/models';
 import { ActualApiServiceI, Budget } from './types';
 
 class ActualApiService implements ActualApiServiceI {

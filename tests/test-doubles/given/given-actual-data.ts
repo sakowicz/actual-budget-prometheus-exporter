@@ -1,5 +1,5 @@
-import { APIAccountEntity, APICategoryEntity } from '@actual-app/api/@types/loot-core/server/api-models';
-import { TransactionEntity } from '@actual-app/api/@types/loot-core/types/models';
+import { APIAccountEntity, APICategoryEntity } from '@actual-app/api/@types/loot-core/src/server/api-models';
+import { TransactionEntity } from '@actual-app/api/@types/loot-core/src/types/models';
 
 export default class GivenActualData {
   public static CATEGORY_GROCERIES = 'ff7be77b-40f4-4e9d-aea4-be6b8c431281';

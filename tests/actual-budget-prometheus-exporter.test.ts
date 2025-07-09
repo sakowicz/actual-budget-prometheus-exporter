@@ -1,4 +1,4 @@
-import { APIAccountEntity, APICategoryEntity } from '@actual-app/api/@types/loot-core/server/api-models';
+import { APIAccountEntity, APICategoryEntity } from '@actual-app/api/@types/loot-core/src/server/api-models';
 import InMemoryActualApiService from './test-doubles/in-memory-actual-api-service';
 import GivenActualData from './test-doubles/given/given-actual-data';
 import ActualBudgetPrometheusExporter from '../src/actual-budget-prometheus-exporter';
