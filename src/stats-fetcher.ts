@@ -24,7 +24,10 @@ export default class StatsFetcher implements StatsFetcherI {
       const accountBalance = await this.actualApiService.getAccountBalance(account.id);
       balance += accountBalance;
       accounts.push({
-        id: account.id, name: account.name, balance: accountBalance, isOffBudget: account.offbudget,
+        id: account.id,
+        name: account.name,
+        balance: accountBalance,
+        isOffBudget: account.offbudget ?? false,
       });
     }
 
