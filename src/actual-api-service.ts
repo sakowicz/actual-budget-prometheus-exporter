@@ -62,18 +62,17 @@ class ActualApiService implements ActualApiServiceI {
   }
 
   public async getCategories(): Promise<(APICategoryEntity | APICategoryGroupEntity)[]> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return this.actualApiClient.getCategories();
+    return this.actualApiClient.getCategories() as Promise<
+      (APICategoryEntity | APICategoryGroupEntity)[]
+    >;
   }
 
   public async getAccounts(): Promise<APIAccountEntity[]> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return this.actualApiClient.getAccounts();
+    return this.actualApiClient.getAccounts() as Promise<APIAccountEntity[]>;
   }
 
   public async getAccountBalance(id: string): Promise<number> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return this.actualApiClient.getAccountBalance(id);
+    return this.actualApiClient.getAccountBalance(id) as Promise<number>;
   }
 
   public async getTransactions(): Promise<TransactionEntity[]> {
@@ -82,8 +81,7 @@ class ActualApiService implements ActualApiServiceI {
     // eslint-disable-next-line no-restricted-syntax
     for (const account of accounts) {
       transactions = transactions.concat(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        await this.actualApiClient.getTransactions(account.id, '1990-01-01', '2030-01-01'),
+        await this.actualApiClient.getTransactions(account.id, '1990-01-01', '2030-01-01') as TransactionEntity[],
       );
     }
     return transactions;
