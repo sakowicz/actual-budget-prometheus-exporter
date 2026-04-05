@@ -7,6 +7,9 @@
     "strict": true,
     "skipLibCheck": true,
     "lib": ["es2020"],
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "paths": {
+      "@actual-app/core/*": ["./node_modules/@actual-app/core/src/*"]
+    }
   }
 }

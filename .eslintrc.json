@@ -27,7 +27,7 @@
     "import/no-unresolved": [
       "error",
       {
-        "ignore": ["^@actual-app/api/@types/loot-core/.+"]
+        "ignore": ["^@actual-app/core/.+"]
       }
     ],
     "no-unused-vars": "off",

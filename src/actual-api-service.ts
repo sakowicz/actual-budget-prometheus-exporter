@@ -1,9 +1,5 @@
-import {
-  APIAccountEntity,
-  APICategoryEntity,
-  APICategoryGroupEntity,
-} from '@actual-app/api/@types/loot-core/src/server/api-models';
-import { TransactionEntity } from '@actual-app/api/@types/loot-core/src/types/models';
+import { APIAccountEntity, APICategoryEntity, APICategoryGroupEntity } from '@actual-app/core/server/api-models';
+import { TransactionEntity } from '@actual-app/core/types/models';
 import { ActualApiServiceI, Budget } from './types';
 
 class ActualApiService implements ActualApiServiceI {
@@ -76,6 +72,7 @@ class ActualApiService implements ActualApiServiceI {
   }
 
   public async getAccountBalance(id: string): Promise<number> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.actualApiClient.getAccountBalance(id);
   }
 
@@ -85,6 +82,7 @@ class ActualApiService implements ActualApiServiceI {
     // eslint-disable-next-line no-restricted-syntax
     for (const account of accounts) {
       transactions = transactions.concat(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         await this.actualApiClient.getTransactions(account.id, '1990-01-01', '2030-01-01'),
       );
     }
