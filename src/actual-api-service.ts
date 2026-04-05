@@ -2,8 +2,18 @@ import { APIAccountEntity, APICategoryEntity, APICategoryGroupEntity } from '@ac
 import { TransactionEntity } from '@actual-app/core/types/models';
 import { ActualApiServiceI, Budget } from './types';
 
+interface ActualApiClient {
+  init(config: { dataDir: string; serverURL: string; password: string }): Promise<void>;
+  shutdown(): Promise<void>;
+  downloadBudget(syncId: string, opts?: { password?: string }): Promise<unknown>;
+  getCategories(): Promise<unknown>;
+  getAccounts(): Promise<unknown>;
+  getAccountBalance(id: string): Promise<unknown>;
+  getTransactions(accountId: string, startDate: string, endDate: string): Promise<unknown>;
+}
+
 class ActualApiService implements ActualApiServiceI {
-  private actualApiClient: typeof import('@actual-app/api');
+  private actualApiClient: ActualApiClient;
 
   private fs: typeof import('fs');
 
@@ -14,7 +24,7 @@ class ActualApiService implements ActualApiServiceI {
   private readonly password: string;
 
   constructor(
-    actualApiClient: typeof import('@actual-app/api'),
+    actualApiClient: ActualApiClient,
     fs: typeof import('fs'),
     dataDir: string,
     serverURL: string,

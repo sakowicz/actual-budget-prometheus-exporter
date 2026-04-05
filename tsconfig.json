@@ -8,8 +8,12 @@
     "skipLibCheck": true,
     "lib": ["es2020"],
     "outDir": "./dist",
+    "baseUrl": ".",
     "paths": {
-      "@actual-app/core/*": ["./node_modules/@actual-app/core/src/*"]
+      "@actual-app/core/server/api-models": ["./src/shims/actual-app-core-api-models"],
+      "@actual-app/core/types/models": ["./src/shims/actual-app-core-types-models"],
+      "@actual-app/core": ["./src/shims/empty"],
+      "@actual-app/core/*": ["./src/shims/empty"]
     }
   }
 }
