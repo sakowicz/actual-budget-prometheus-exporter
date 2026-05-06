@@ -3,7 +3,7 @@ import { TransactionEntity } from '@actual-app/core/types/models';
 import { ActualApiServiceI, Budget } from './types';
 
 interface ActualApiClient {
-  init(config: { dataDir: string; serverURL: string; password: string }): Promise<void>;
+  init(config: { dataDir: string; serverURL: string; password: string }): Promise<unknown>;
   shutdown(): Promise<void>;
   downloadBudget(syncId: string, opts?: { password?: string }): Promise<unknown>;
   getCategories(): Promise<unknown>;
