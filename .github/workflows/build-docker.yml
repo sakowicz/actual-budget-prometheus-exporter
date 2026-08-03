@@ -2,12 +2,21 @@ name: Docker Image CI
 on: push
 jobs:
   docker:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            platforms: linux/amd64,linux/arm/v6,linux/arm/v7
+          - runner: ubuntu-24.04-arm
+            platforms: linux/arm64/v8
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up QEMU
+        if: matrix.runner == 'ubuntu-latest'
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -17,4 +26,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
+          platforms: ${{ matrix.platforms }}
