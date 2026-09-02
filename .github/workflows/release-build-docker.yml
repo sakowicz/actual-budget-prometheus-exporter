@@ -2,6 +2,18 @@ name: Build and Push Docker Images
 on:
   release:
     types: [published]
+  # Also callable from release.yml: a release created with GITHUB_TOKEN does not
+  # emit a `release: published` event, so the release workflow calls this directly.
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_PASSWORD:
+        required: true
 
 env:
   IMAGE: sakowicz/actual-budget-prometheus-exporter
@@ -22,6 +34,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref_name }}
 
       - name: Set up QEMU
         if: matrix.runner == 'ubuntu-latest'
@@ -83,8 +97,8 @@ jobs:
         run: |
           docker buildx imagetools create \
             -t "$IMAGE:latest" \
-            -t "$IMAGE:${{ github.ref_name }}" \
+            -t "$IMAGE:${{ inputs.tag || github.ref_name }}" \
             $(printf "$IMAGE@sha256:%s " *)
 
       - name: Inspect image
-        run: docker buildx imagetools inspect "$IMAGE:${{ github.ref_name }}"
+        run: docker buildx imagetools inspect "$IMAGE:${{ inputs.tag || github.ref_name }}"
