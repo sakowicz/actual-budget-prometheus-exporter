@@ -3,6 +3,8 @@ FROM node:22.21-alpine3.22
 ARG NODE_ENV=production
 ENV NODE_ENV=$NODE_ENV
 
+RUN apk add --no-cache python3 make g++
+
 USER node
 
 WORKDIR /opt/node_app
