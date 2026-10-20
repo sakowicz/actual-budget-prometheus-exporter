@@ -33,9 +33,39 @@ describe('StatsFetcher', () => {
 
     // Assert
     expect(stats.categories).toEqual([
-      { id: 'id1', name: 'Groceries', transactionCount: 0 },
-      { id: 'id2', name: 'Travel', transactionCount: 0 },
+      {
+        id: 'id1', name: 'Groceries', transactionCount: 0, balance: null,
+      },
+      {
+        id: 'id2', name: 'Travel', transactionCount: 0, balance: null,
+      },
     ]);
+  });
+
+  it('It returns category balances from current budget month', async () => {
+    // Arrange
+    const budget = { budgetId: 'budget id', e2ePassword: null, name: 'name' };
+    inMemoryApiService.setCategories(GivenActualData.createSampleCategories());
+    inMemoryApiService.setBudgetMonth({
+      categoryGroups: [
+        {
+          categories: [
+            { id: GivenActualData.CATEGORY_GROCERIES, balance: 1500 },
+            { id: GivenActualData.CATEGORY_TRAVEL, balance: -200 },
+          ],
+        },
+        { categories: [{ id: GivenActualData.CATEGORY_SALARY }] },
+      ],
+    });
+
+    // Act
+    const stats = await new StatsFetcher(inMemoryApiService).fetch(budget);
+
+    // Assert
+    const balanceOf = (id: string) => stats.categories.find((c) => c.id === id)?.balance;
+    expect(balanceOf(GivenActualData.CATEGORY_GROCERIES)).toEqual(1500);
+    expect(balanceOf(GivenActualData.CATEGORY_TRAVEL)).toEqual(-200);
+    expect(balanceOf(GivenActualData.CATEGORY_SALARY)).toBeNull();
   });
 
   it('It returns all accounts', async () => {

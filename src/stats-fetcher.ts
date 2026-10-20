@@ -14,9 +14,14 @@ export default class StatsFetcher implements StatsFetcherI {
     const actualAccounts = await this.actualApiService.getAccounts();
     const actualCategories = await this.actualApiService.getCategories();
     const accounts: Account[] = [];
+    const categoryBalances = await this.fetchCategoryBalances();
     const categories: Category[] = actualCategories.map(
-      (category) => (
-        { id: category.id, name: category.name, transactionCount: 0 }),
+      (category) => ({
+        id: category.id,
+        name: category.name,
+        transactionCount: 0,
+        balance: categoryBalances.get(category.id) ?? null,
+      }),
     );
     let balance = 0;
 
@@ -69,5 +74,19 @@ export default class StatsFetcher implements StatsFetcherI {
       transfersCount,
       budget: budget.name,
     };
+  }
+
+  private async fetchCategoryBalances(): Promise<Map<string, number>> {
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const budgetMonth = await this.actualApiService.getBudgetMonth(currentMonth);
+    const balances = new Map<string, number>();
+    budgetMonth.categoryGroups.forEach((group) => {
+      group.categories?.forEach((category) => {
+        if (category.balance !== undefined) {
+          balances.set(category.id, category.balance);
+        }
+      });
+    });
+    return balances;
   }
 }

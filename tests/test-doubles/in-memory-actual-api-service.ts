@@ -4,7 +4,7 @@ import {
   APICategoryGroupEntity,
 } from '@actual-app/core/server/api-models';
 import { TransactionEntity } from '@actual-app/core/types/models';
-import { ActualApiServiceI } from '../../src/types';
+import { ActualApiServiceI, BudgetMonth } from '../../src/types';
 
 export default class InMemoryActualApiService implements ActualApiServiceI {
   private categories: (APICategoryEntity | APICategoryGroupEntity)[] = [];
@@ -12,6 +12,8 @@ export default class InMemoryActualApiService implements ActualApiServiceI {
   private accounts: APIAccountEntity[] = [];
 
   private transactions: TransactionEntity[] = [];
+
+  private budgetMonth: BudgetMonth = { categoryGroups: [] };
 
   async initializeApi(): Promise<void> {
     // Initialize the API (mock implementation)
@@ -54,5 +56,13 @@ export default class InMemoryActualApiService implements ActualApiServiceI {
     });
 
     return Promise.resolve(balance);
+  }
+
+  async getBudgetMonth(): Promise<BudgetMonth> {
+    return Promise.resolve(this.budgetMonth);
+  }
+
+  setBudgetMonth(budgetMonth: BudgetMonth): void {
+    this.budgetMonth = budgetMonth;
   }
 }

@@ -1,6 +1,6 @@
 import { APIAccountEntity, APICategoryEntity, APICategoryGroupEntity } from '@actual-app/core/server/api-models';
 import { TransactionEntity } from '@actual-app/core/types/models';
-import { ActualApiServiceI, Budget } from './types';
+import { ActualApiServiceI, Budget, BudgetMonth } from './types';
 
 interface ActualApiClient {
   init(config: { dataDir: string; serverURL: string; password: string }): Promise<unknown>;
@@ -10,6 +10,7 @@ interface ActualApiClient {
   getAccounts(): Promise<unknown>;
   getAccountBalance(id: string): Promise<unknown>;
   getTransactions(accountId: string, startDate: string, endDate: string): Promise<unknown>;
+  getBudgetMonth(month: string): Promise<unknown>;
 }
 
 class ActualApiService implements ActualApiServiceI {
@@ -83,6 +84,10 @@ class ActualApiService implements ActualApiServiceI {
 
   public async getAccountBalance(id: string): Promise<number> {
     return this.actualApiClient.getAccountBalance(id) as Promise<number>;
+  }
+
+  public async getBudgetMonth(month: string): Promise<BudgetMonth> {
+    return this.actualApiClient.getBudgetMonth(month) as Promise<BudgetMonth>;
   }
 
   public async getTransactions(): Promise<TransactionEntity[]> {

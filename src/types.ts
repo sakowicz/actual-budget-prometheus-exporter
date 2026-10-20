@@ -12,6 +12,12 @@ export interface Budget {
   name: string,
 }
 
+export interface BudgetMonth {
+  categoryGroups: {
+    categories?: { id: string; balance?: number }[];
+  }[];
+}
+
 export interface ActualApiServiceI {
   initializeApi(budget: Budget): Promise<void>;
 
@@ -24,6 +30,8 @@ export interface ActualApiServiceI {
   getTransactions(): Promise<TransactionEntity[]>
 
   getAccountBalance(id: string): Promise<number>
+
+  getBudgetMonth(month: string): Promise<BudgetMonth>
 }
 
 export interface Account {
@@ -37,6 +45,7 @@ export interface Category {
   id: string;
   name: string;
   transactionCount: number;
+  balance: number | null;
 }
 
 export interface Stats {

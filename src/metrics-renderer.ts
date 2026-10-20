@@ -8,6 +8,8 @@ export default class MetricsRenderer implements MetricsRendererI {
 
   private categoryGauge: client.Gauge;
 
+  private categoryBalanceGauge: client.Gauge;
+
   private uncategorizedTransactionCountGauge: client.Gauge;
 
   private balance: client.Gauge;
@@ -43,6 +45,12 @@ export default class MetricsRenderer implements MetricsRendererI {
       labelNames: ['category', 'budget'],
     });
 
+    this.categoryBalanceGauge = new client.Gauge({
+      name: 'actual_budget_category_balance',
+      help: 'Category Balance in current month',
+      labelNames: ['category', 'budget'],
+    });
+
     this.uncategorizedTransactionCountGauge = new client.Gauge({
       name: 'actual_budget_uncategorized_transaction_count',
       help: 'Uncategorized Transaction Count',
@@ -57,6 +65,7 @@ export default class MetricsRenderer implements MetricsRendererI {
 
     this.register.registerMetric(this.accountGauge);
     this.register.registerMetric(this.categoryGauge);
+    this.register.registerMetric(this.categoryBalanceGauge);
     this.register.registerMetric(this.uncategorizedTransactionCountGauge);
     this.register.registerMetric(this.balance);
     this.register.registerMetric(this.transactionCount);
@@ -84,6 +93,12 @@ export default class MetricsRenderer implements MetricsRendererI {
         category: category.name,
         budget: stats.budget,
       }, category.transactionCount);
+      if (category.balance !== null) {
+        this.categoryBalanceGauge.set({
+          category: category.name,
+          budget: stats.budget,
+        }, category.balance);
+      }
     });
     this.uncategorizedTransactionCountGauge.set(
       { budget: stats.budget },

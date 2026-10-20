@@ -21,6 +21,7 @@ It exposes the following metrics:
 ```prometheus
 actual_budget_account_balance{account="Account Name",is_off_budget="false",budget="main"} 10000 # for each account
 actual_budget_category_tranasction_count{category="Category Name",budget="main"} 1000 # for each category
+actual_budget_category_balance{category="Category Name",budget="main"} 10000 # for each expense category, current month
 actual_budget_uncategorized_transaction_count{budget="main"} 0
 actual_budget_balance 1000000{budget="main"} # total balance
 actual_budget_transaction_count{budget="main"} 1000
